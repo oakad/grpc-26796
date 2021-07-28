@@ -1,0 +1,7 @@
+
+genrule (
+	name = "t2",
+	srcs = ["@t1//vendor:cpp_proto"],
+	cmd = "echo $(locations @t1//vendor:cpp_proto) > $@",
+	outs = ["list.txt"],
+)
