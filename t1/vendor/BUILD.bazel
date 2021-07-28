@@ -1,0 +1,35 @@
+load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+	name = "vendor",
+	srcs = glob(["*.proto"], ["t1_svc.proto"]),
+	strip_import_prefix = "/vendor",
+)
+
+proto_library(
+	name = "vendor_svc",
+	srcs = ["t1_svc.proto"],
+	deps = [
+		":vendor",
+	],
+	strip_import_prefix = "/vendor",
+)
+
+cc_proto_library(
+	name = "cpp_proto_msg",
+	deps = [":vendor"],
+)
+
+cc_proto_library(
+	name = "cpp_proto_msg_svc",
+	deps = [":vendor_svc"],
+)
+
+cc_grpc_library(
+	name = "cpp_proto",
+	srcs = [":vendor_svc"],
+	deps = [":cpp_proto_msg", ":cpp_proto_msg_svc"],
+	grpc_only = True,
+)
